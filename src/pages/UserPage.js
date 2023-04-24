@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export default function UserPage(props) {
+  let { id } = useParams();
+
   // Setting initial state
   const initialUserState = {
     user: {},
@@ -15,24 +18,23 @@ export default function UserPage(props) {
   useEffect(() => {
     const getUser = async () => {
       // Pass our param (:id) to the API call
-      const { data } = await axios(
-        `https://api.github.com/users/${props.match.params.id}`
-      );
+      const { data } = await axios(`https://api.github.com/users/${id}`);
 
+      console.log(data);
       // Update state
       setUser(data);
     };
 
     // Invoke the async function
     getUser();
-  }, []); // Don't forget the `[]`, which will prevent useEffect from running in an infinite loop
+  }, [id]); // Don't forget the `[]`, which will prevent useEffect from running in an infinite loop
 
   // Return a table with some data from the API.
   return user.loading ? (
     <div>Loading...</div>
   ) : (
     <div className="container">
-      <h1>{props.match.params.id}</h1>
+      <h1>{id}</h1>
 
       <table>
         <thead>
@@ -46,7 +48,7 @@ export default function UserPage(props) {
         <tbody>
           <tr>
             <td>{user.name}</td>
-            <td>{user.location}</td>
+            <td>{user.public_repos}</td>
             <td>
               <a href={user.blog}>{user.blog}</a>
             </td>
